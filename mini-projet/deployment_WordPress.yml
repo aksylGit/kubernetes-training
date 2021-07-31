@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wordpress
+  labels:
+    app: wordpress
+spec:
+  selector:
+    matchLabels:
+      app: wordpress-label
+  template:
+    metadata:
+      labels:
+        app: wordpress-label
+    spec:
+      containers:
+      - image: wordpress
+        name: wordpress
+        env:
+        - name: WORDPRESS_DB_HOST
+          value: mysql-service
+        - name: WORDPRESS_DB_USER
+          value: userdb
+        - name: WORDPRESS_DB_PASSWORD
+          value: userdbmpd 
+        - name: WORDPRESS_DB_NAME
+          value: mysql-db
+        ports:
+          - containerPort: 80
+        volumeMounts:
+          - mountPath: /var/www/html
+            name: data-volume
+      volumes:
+        - name: data-volume
+          hostPath:
+            path: /data
+            type: Directory
+          

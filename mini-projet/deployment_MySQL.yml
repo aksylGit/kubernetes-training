@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-wordpress
+  labels:
+    app: mysql-wordpress
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql-label
+  template:
+    metadata:
+      labels:
+        app: mysql-label
+    spec:
+      containers:
+      - name: mysql
+        image: mysql
+        env:
+        - name: MYSQL_USER
+          value: userdb
+        - name: MYSQL_PASSWORD
+          value: userdbmpd
+        - name: MYSQL_ROOT_PASSWORD
+          value: root
+        - name: MYSQL_DATABASE
+          value: mysql-db
+
+        ports:
+        - containerPort: 3306
+        volumeMounts:
+        - mountPath: /var/lib/mysql
+          name: mysql-data
+        
+      volumes:
+      - name: mysql-data
+        hostPath:
+          #chemin du dossier sur le hote
+          path: /data
+          type: Directory
